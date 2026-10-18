@@ -2,9 +2,16 @@
  * Transaction Operations
  *
  * Provides methods for creating, submitting, and managing transactions.
+ *
+ * All methods that interact with the Stellar network wrap raw Stellar SDK
+ * errors through {@link withStellarErrorMapping} so that callers always
+ * receive typed SDK error classes instead of raw Stellar SDK errors.
+ *
+ * @see src/lib/errors/stellar-error-mapper.ts
  */
 
-import type { Transaction, User } from '../types/models';
+import type { Transaction } from '../types/models';
+import { withStellarErrorMapping } from '../lib/errors/stellar-error-mapper';
 
 /**
  * Request to build a transaction
@@ -95,39 +102,70 @@ export async function getTransactionHistory(
 }
 
 /**
- * Build a transaction (prepare it for submission)
+ * Build a transaction (prepare it for submission).
+ *
+ * Wraps Stellar SDK errors so that callers receive typed SDK errors.
  */
 export async function buildTransaction(
   request: BuildTransactionRequest
 ): Promise<BuildTransactionResponse> {
-  throw new Error('Not implemented');
+  return withStellarErrorMapping(async () => {
+    throw new Error('Not implemented');
+  });
 }
 
 /**
- * Build a payment transaction
+ * Build a payment transaction.
+ *
+ * Wraps Stellar SDK errors so that callers receive typed SDK errors.
  */
 export async function buildPaymentTransaction(
   request: BuildTransactionRequest
 ): Promise<BuildTransactionResponse> {
-  throw new Error('Not implemented');
+  return withStellarErrorMapping(async () => {
+    throw new Error('Not implemented');
+  });
 }
 
 /**
- * Submit a pre-built transaction
+ * Submit a pre-built transaction.
+ *
+ * Wraps Stellar SDK errors (e.g. `SubmissionError`, network failures) into
+ * SDK `PaymentError` or `NetworkError` instances so that error handling is
+ * consistent with the rest of the SDK.
+ *
+ * The original Stellar error is preserved as `.cause` on the thrown error for
+ * debugging purposes:
+ *
+ * ```ts
+ * try {
+ *   await submitTransaction({ envelope });
+ * } catch (err) {
+ *   if (err instanceof PaymentError) {
+ *     console.error('Stellar cause:', (err as any).cause);
+ *   }
+ * }
+ * ```
  */
 export async function submitTransaction(
   request: SubmitTransactionRequest
 ): Promise<SubmitTransactionResponse> {
-  throw new Error('Not implemented');
+  return withStellarErrorMapping(async () => {
+    throw new Error('Not implemented');
+  });
 }
 
 /**
- * Submit a payment transaction
+ * Submit a payment transaction.
+ *
+ * Wraps Stellar SDK errors so that callers receive typed SDK errors.
  */
 export async function submitPaymentTransaction(
   request: SubmitTransactionRequest
 ): Promise<SubmitTransactionResponse> {
-  throw new Error('Not implemented');
+  return withStellarErrorMapping(async () => {
+    throw new Error('Not implemented');
+  });
 }
 
 /**
@@ -167,8 +205,12 @@ export async function updateTipStatus(tipId: string, status: string): Promise<{ 
 }
 
 /**
- * Create and submit a tip in one operation
+ * Create and submit a tip in one operation.
+ *
+ * Wraps Stellar SDK errors so that callers receive typed SDK errors.
  */
 export async function createTip(request: CreateTipRequest): Promise<SubmitTransactionResponse> {
-  throw new Error('Not implemented');
+  return withStellarErrorMapping(async () => {
+    throw new Error('Not implemented');
+  });
 }
