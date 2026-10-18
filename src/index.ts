@@ -243,6 +243,16 @@ export type {
 } from './types/errors';
 export { isRetryableError } from './lib/errors/utils';
 
+// Re-export error code registry and localization utilities (Issue #163)
+export { ErrorCodes, type ErrorCode } from './lib/errors/error-codes';
+export {
+  getErrorMessage,
+  messages as errorMessages,
+  type ErrorLocale,
+  type ErrorMessageMap,
+  type ErrorMessages,
+} from './lib/errors/error-messages';
+
 // Re-export domain models
 export type {
   User,
